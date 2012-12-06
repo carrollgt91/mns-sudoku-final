@@ -40,7 +40,6 @@ public class Digger {
 			rcBound = 5;
 			totalBound = 33;
 			break;
-
 		case HARD:
 			rcBound = 4;
 			totalBound = 30;
@@ -57,35 +56,41 @@ public class Digger {
 		board.prettyPrint();
 	}
 
+	private boolean finished()
+	{
+		return board.solvedCellCount() < totalBound + 3;
+	}
+
 	private void traverseBoard()
 	{
-		for(int i = 0; i < 9; i++)
-		{
-			if(board.solvedCellCount() <= totalBound)
-				break;
-			
-			for(int j = 0; j < 9; j++) {
-				if(board.solvedCellCountForRow(i) >= rcBound)
-					tryDig(i,j);
-				else
+		while(!finished())	{
+			for(int i = 0; i < 9; i++)
+			{
+				if(board.solvedCellCount() <= totalBound)
 					break;
+
+				for(int j = 0; j < 9; j++) {
+					if(board.solvedCellCountForRow(i) >= rcBound)
+						tryDig(i,j);
+					else
+						break;
+				}
+			}
+
+			for(int i = 0; i < 9; i++)
+			{
+
+				if(board.solvedCellCount() <= totalBound)
+					break;
+
+				for(int j = 0; j < 9; j++) {
+					if(board.solvedCellCountForCol(i) >= rcBound)
+						tryDig(j,i);
+					else
+						break;
+				}
 			}
 		}
-
-		for(int i = 0; i < 9; i++)
-		{
-			
-			if(board.solvedCellCount() <= totalBound)
-				break;
-			
-			for(int j = 0; j < 9; j++) {
-				if(board.solvedCellCountForCol(i) >= rcBound)
-					tryDig(j,i);
-				else
-					break;
-			}
-		}
-
 
 	}
 
