@@ -17,7 +17,8 @@ public class Digger {
 
 	public static void main(String[] args) throws Exception {
 
-		new Digger(new Board(), Challenge.EASY);
+		Digger dig = new Digger(new Board(), Challenge.EASY);
+		dig.prettyPrint();
 
 	}
 	public Digger (Board board, Challenge level) throws Exception
@@ -64,13 +65,14 @@ public class Digger {
 	private void traverseBoard()
 	{
 		while(!finished())	{
+			
 			for(int i = 0; i < 9; i++)
 			{
 				if(board.solvedCellCount() <= totalBound)
 					break;
 
 				for(int j = 0; j < 9; j++) {
-					if(board.solvedCellCountForRow(i) >= rcBound)
+					if(board.solvedCellCountForRow(i) >= rcBound && board.solvedCellCountForCol(j) >= rcBound)
 						tryDig(i,j);
 					else
 						break;
@@ -84,7 +86,7 @@ public class Digger {
 					break;
 
 				for(int j = 0; j < 9; j++) {
-					if(board.solvedCellCountForCol(i) >= rcBound)
+					if(board.solvedCellCountForRow(j) >= rcBound && board.solvedCellCountForCol(i) >= rcBound)
 						tryDig(j,i);
 					else
 						break;
@@ -108,6 +110,8 @@ public class Digger {
 	}
 
 	private boolean isUnique(int row, int col) {
+		
+		System.out.println("Is Unique");
 
 		Board testBoard = board;
 		int[][] solverFormattedBoard = testBoard.convertToSolverFormat();
@@ -131,6 +135,10 @@ public class Digger {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public void prettyPrint() {
+		board.prettyPrint();
 	}
 }
 
