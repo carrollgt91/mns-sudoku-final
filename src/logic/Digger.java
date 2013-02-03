@@ -17,7 +17,7 @@ public class Digger {
 
 	public static void main(String[] args) throws Exception {
 
-		Digger dig = new Digger(new Board(), Challenge.EASY);
+		Digger dig = new Digger(new Board(), Challenge.EVIL);
 		dig.prettyPrint();
 
 	}
@@ -34,15 +34,15 @@ public class Digger {
 	{
 		switch(this.level){
 		case EASY:
-			rcBound = 6;
+			rcBound = 5;
 			totalBound = 45;
 			break;
 		case MEDIUM:
-			rcBound = 5;
+			rcBound = 4;
 			totalBound = 33;
 			break;
 		case HARD:
-			rcBound = 4;
+			rcBound = 3;
 			totalBound = 30;
 			break;
 		case EVIL:
@@ -54,38 +54,62 @@ public class Digger {
 	public void digBoard() throws Exception
 	{
 		traverseBoard();
-		board.prettyPrint();
 	}
 
 	private boolean finished()
 	{
-		return board.solvedCellCount() < totalBound + 3;
+		int count = board.solvedCellCount();
+		boolean solved = count < totalBound + 3;
+		return solved;
 	}
 
 	private void traverseBoard()
 	{
 		while(!finished())	{
 			
-			for(int i = 0; i < 9; i++)
+			int it = (int) (Math.random() * 9);
+			int stop = it - 1 % 9;
+			
+			if(stop == -1)
+				stop = 8;
+			
+			
+			for(int i = it; i != stop; i = ((i+1) % 9))
 			{
+
+					if(i == it - 2)
+						stop++;
+				
 				if(board.solvedCellCount() <= totalBound)
 					break;
-
-				for(int j = 0; j < 9; j++) {
+				
+				int jt = (int) (Math.random() * 9);
+				int stopj = jt - 1 % 9;
+				for(int j = jt; j != stopj; j = ((j + 1) % 9)) {
+					if(j == jt -2)
+						stopj++;
 					if(board.solvedCellCountForRow(i) >= rcBound && board.solvedCellCountForCol(j) >= rcBound)
 						tryDig(i,j);
 					else
 						break;
 				}
 			}
-
-			for(int i = 0; i < 9; i++)
+			stop = it - 1 % 9;
+			if(stop == -1)
+				stop = 8;
+			for(int i = it; i != stop; i = ((i + 1) % 9))
 			{
-
 				if(board.solvedCellCount() <= totalBound)
 					break;
-
-				for(int j = 0; j < 9; j++) {
+				
+				int jt = (int) (Math.random() * 9);
+				int stopj = jt - 1 % 9;
+				
+				for(int j = jt; j != stopj; j = ((j + 1) % 9)) {
+					
+					if(j == jt -2)
+						stopj++;
+					
 					if(board.solvedCellCountForRow(j) >= rcBound && board.solvedCellCountForCol(i) >= rcBound)
 						tryDig(j,i);
 					else
@@ -93,6 +117,8 @@ public class Digger {
 				}
 			}
 		}
+		
+		System.out.println("Finished!");
 
 	}
 
@@ -102,7 +128,6 @@ public class Digger {
 		{
 			try {
 				board.removeValue(row, col);
-				board.prettyPrint();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -110,8 +135,6 @@ public class Digger {
 	}
 
 	private boolean isUnique(int row, int col) {
-		
-		System.out.println("Is Unique");
 
 		Board testBoard = board;
 		int[][] solverFormattedBoard = testBoard.convertToSolverFormat();
